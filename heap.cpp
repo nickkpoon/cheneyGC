@@ -9,6 +9,8 @@ Heap::Heap(int32_t heap_size) : heap_size(heap_size), root_set() {
     from = heap;
     to = heap + heap_size / 2;
     bump_ptr = 0;
+    
+    alloc_ptr = heap;
 }
 
 Heap::~Heap() {
@@ -20,7 +22,8 @@ Heap::~Heap() {
 // debugging tool. It's called whenever the DEBUG command is found
 // in the input program.
 void Heap::debug() {
-    // Implement me
+    
+    // Implement me (OPTIONAL)
 }
 
 // The allocate method allocates a chunk of memory of given size.
@@ -31,12 +34,26 @@ void Heap::debug() {
 // this method should throw an OutOfMemoryException.
 obj_ptr Heap::allocate(int32_t size) {
     // Implement me
+
+    if (heap + size > from + size/2)
+        collect();
+    if (heap + size > from + size/2)
+        cout << "INSUFFICIENT MEMORY! ! !";
+    o = alloc_ptr;
+    alloc_ptr = alloc_ptr + size;
+    return o;
 }
 
 // This method should implement the actual semispace garbage collection.
 // As a final result this method *MUST* call print();
 void Heap::collect() {
     // Implement me
+    
+    std::swap(from, to);
+    alloc_ptr = to;
+    bump_ptr = to;
+    
+    for()
     
     // Please do not remove the call to print, it has to be the final
     // operation in the method for your assignment to be graded.
