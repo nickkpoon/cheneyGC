@@ -10,7 +10,7 @@ Heap::Heap(int32_t heap_size) : heap_size(heap_size), root_set() {
     to = heap + heap_size / 2;
     bump_ptr = 0;
     
-    alloc_ptr = heap;
+    alloc_ptr = *heap;
 }
 
 Heap::~Heap() {
@@ -38,8 +38,8 @@ obj_ptr Heap::allocate(int32_t size) {
     if (heap + size > from + size/2)
         collect();
     if (heap + size > from + size/2)
-        cout << "INSUFFICIENT MEMORY! ! !";
-    o = alloc_ptr;
+        std::cout << "INSUFFICIENT MEMORY! ! !";
+    obj_ptr o = alloc_ptr;
     alloc_ptr = alloc_ptr + size;
     return o;
 }
@@ -49,11 +49,11 @@ obj_ptr Heap::allocate(int32_t size) {
 void Heap::collect() {
     // Implement me
     
-    std::swap(from, to);
+    /*std::swap(from, to);
     alloc_ptr = to;
     bump_ptr = to;
     
-    for()
+    for()*/
     
     // Please do not remove the call to print, it has to be the final
     // operation in the method for your assignment to be graded.

@@ -108,7 +108,6 @@ class Heap {
     // This means that it will initially be 0, and is incremented as allocation happens.
     // If we were to allocate 10 bytes on an empty heap, bump_ptr would then point to 10.
     int32_t bump_ptr;
-    
     // This is your root set, it maps variables to object pointers (again, object pointers
     // are relative to the from pointer). If you were to allocate objects of sizes 5 and 10
     // on an empty heap, and assign them to x and y, your root set would look like this:
@@ -118,6 +117,9 @@ class Heap {
     // This is the object id counter, it assigns every new object a unique id.
     // You don't need to touch this in any way.
     uint32_t object_id = 0;
+    
+    
+    int32_t alloc_ptr;
     
 public:
     Heap(int32_t heap_size);
