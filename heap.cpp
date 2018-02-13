@@ -10,7 +10,7 @@ Heap::Heap(int32_t heap_size) : heap_size(heap_size), root_set() {
     to = heap + heap_size / 2;
     bump_ptr = 0;
     
-    alloc_ptr = *heap;
+    alloc_ptr = *heap;  //new pointer added, starts from the from-space to keep track
 }
 
 Heap::~Heap() {
@@ -66,18 +66,21 @@ void Heap::collect() {
             case FOO: {
                 /*auto obj = global_address<Foo>(position);
                 objects.push_back(pair(obj->id, "Foo"));*/
+                copy(position, Foo);
                 position += sizeof(Foo);
                 break;
             }
             case BAR: {
                 /*auto obj = global_address<Bar>(position);
                 objects.push_back(pair(obj->id, "Bar"));*/
+                copy(position, Bar);
                 position += sizeof(Bar);
                 break;
             }
             case BAZ: {
                 /*auto obj = global_address<Baz>(position);
                 objects.push_back(pair(obj->id, "Baz"));*/
+                copy(position, Baz);
                 position += sizeof(Baz);
                 break;
             }
@@ -87,23 +90,55 @@ void Heap::collect() {
             }
         }
     }
-    
-    
-    
 
-    
-    /*std::swap(from, to);
-    alloc_ptr = to;
-    bump_ptr = to;
-    
-    for()*/
-    
+    posiiton = 0;
+
+    //ATTEMPTING to scan for every object in the heap, then the bump pointer will point 
+    // to the next objects in the heap should there be any more.
+
+    while (obj_ptr < alloc_ptr)
+    {
+        //iterate again, copying with scan pointer
+        while(position < heap_size / 2 && position < bump_ptr) {
+        object_type type = get_object_type(position);
+        switch(type) {
+            case FOO: {
+                /*auto obj = global_address<Foo>(position);
+                objects.push_back(pair(obj->id, "Foo"));*/
+                copy(position, Foo);
+                position += sizeof(Foo);
+                break;
+            }
+            case BAR: {
+                /*auto obj = global_address<Bar>(position);
+                objects.push_back(pair(obj->id, "Bar"));*/
+                copy(position, Bar);
+                position += sizeof(Bar);
+                break;
+            }
+            case BAZ: {
+                /*auto obj = global_address<Baz>(position);
+                objects.push_back(pair(obj->id, "Baz"));*/
+                copy(position, Baz);
+                position += sizeof(Baz);
+                break;
+            }
+            default: {
+                /*std::string message("Unknown object type while printing: ");
+                throw std::runtime_error(message + std::to_string(int(type)));*/
+            }
+        }
+    }
+
+    }
+
     // Please do not remove the call to print, it has to be the final
     // operation in the method for your assignment to be graded.
+
     print();
 }
 
-obj_ptr Heap::copy(obj_ptr object)
+obj_ptr Heap::copy(obj_ptr object, object_type)
 {
     obj_ptr obj = object;
     obj_ptr new_object;
@@ -116,7 +151,7 @@ obj_ptr Heap::copy(obj_ptr object)
     
     
     
-    if (obj == NULL) // if object does not have a forwarding pointer, commence copying
+    if (to.get(obj) == NULL) // if object does not have a forwarding pointer in to-space, commence copying
     {
         new_object = alloc_ptr;
         alloc_ptr = alloc_ptr + size;
