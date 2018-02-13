@@ -47,7 +47,50 @@ obj_ptr Heap::allocate(int32_t size) {
 // This method should implement the actual semispace garbage collection.
 // As a final result this method *MUST* call print();
 void Heap::collect() {
+    
     // Implement me
+    
+    std::swap(from, to);
+    alloc_ptr = *to;
+    bump_ptr = *to;
+    
+    // Iterate through all roots, and copy
+    
+    obj_ptr position = 0;
+    typedef std::pair<obj_ptr,const char*> pair;
+    std::vector<pair> objects;
+    
+    while(position < heap_size / 2 && position < bump_ptr) {
+        object_type type = get_object_type(position);
+        switch(type) {
+            case FOO: {
+                /*auto obj = global_address<Foo>(position);
+                objects.push_back(pair(obj->id, "Foo"));*/
+                position += sizeof(Foo);
+                break;
+            }
+            case BAR: {
+                /*auto obj = global_address<Bar>(position);
+                objects.push_back(pair(obj->id, "Bar"));*/
+                position += sizeof(Bar);
+                break;
+            }
+            case BAZ: {
+                /*auto obj = global_address<Baz>(position);
+                objects.push_back(pair(obj->id, "Baz"));*/
+                position += sizeof(Baz);
+                break;
+            }
+            default: {
+                /*std::string message("Unknown object type while printing: ");
+                throw std::runtime_error(message + std::to_string(int(type)));*/
+            }
+        }
+    }
+    
+    
+    
+
     
     /*std::swap(from, to);
     alloc_ptr = to;
@@ -58,6 +101,29 @@ void Heap::collect() {
     // Please do not remove the call to print, it has to be the final
     // operation in the method for your assignment to be graded.
     print();
+}
+
+obj_ptr Heap::copy(obj_ptr object)
+{
+    obj_ptr obj = object;
+    obj_ptr new_object;
+    int32_t size = sizeof(get_object_type(obj));
+                          
+    /*if (get_object_type(object) == "Foo")
+    {
+        size = sizeof(Foo)
+    }*/
+    
+    
+    
+    if (obj == NULL) // if object does not have a forwarding pointer, commence copying
+    {
+        new_object = alloc_ptr;
+        alloc_ptr = alloc_ptr + size;
+        *object = *obj;
+        obj = new_object;
+    }
+    return obj;
 }
 
 obj_ptr Heap::get_root(const std::string& name) {
